@@ -1,20 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
 {% for cast in podcast_list %}
   <div class="row">
-    <div class="row">
-      <h3>{{ cast.title }}</h3>
-    </div>
-    <div class="row">
-      <div class="col-md-2">
-        <img src="{{ cast.artwork_url }}" alt="" style="width:100px;height:100px;">
+    <div class="card">
+      <h5 class="card-header">{{ cast.title }}</h5>
+      <div class="card-body">
+        <div class="col-md-2">
+          <img src="{{ cast.artwork_url }}" alt="" style="width:100px;height:100px;">
+        </div>
+        <div class="col-md-10">
+          <p class="card-text">{{ cast.description|safe }}<br></p>
+          <a href="{{ cast.audio_url }}" class="btn btn-primary">Listen Here!</a>
+        </div>
+        <footer class="blockquote-footer">{{ cast.tags }}</footer>
       </div>
-      <div class="col-md-10">
-        {{ cast.description }}<br>
-        <a href="{{ cast.audio_url }}">Listen Here!</a>
-      </div>
-    </div>
-    <div class="row">
-      {{ cast.tags }}
     </div>
   </div>
   <hr>
 {% endfor %}
+{% endblock %}
