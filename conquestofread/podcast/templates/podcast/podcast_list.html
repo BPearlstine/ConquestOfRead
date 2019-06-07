@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% for cast in podcast_list %}
-  <div class="row">
+  {% for cast in podcast_list %}
     <div class="card">
       <h5 class="card-header">{{ cast.title }}</h5>
       <div class="card-body">
@@ -16,7 +15,6 @@
         <footer class="blockquote-footer">{{ cast.tags }}</footer>
       </div>
     </div>
-  </div>
-  <hr>
-{% endfor %}
+    <br>
+  {% endfor %}
 {% endblock %}
