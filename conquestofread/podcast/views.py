@@ -5,6 +5,11 @@ from django.template.response import TemplateResponse
 from django.views.generic.detail import View
 # Create your views here.
 
+class Home(View):
+    template_name = 'podcast/home.html'
+
+    def get(self, request):
+        return TemplateResponse(request, self.template_name)
 
 class PodcastListView(View):
     template_name = 'podcast/podcast_list.html'
