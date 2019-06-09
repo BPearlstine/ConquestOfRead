@@ -26,4 +26,5 @@ urlpatterns = [
     path('podcast/', include('podcast.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('blog/', include('blog.urls'))
 ]
