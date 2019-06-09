@@ -17,7 +17,11 @@
             <p class="card-text">{{ blog.summary }}<br></p>
           </div>
         </div>
-        <footer class="blockquote-footer">{{ blog.tags }}</footer>
+        <footer class="blockquote-footer">
+          {% for tag in blog.tags.all %}
+            {{ tag.tag }}, 
+          {% endfor %}
+        </footer>
       </div>
     </div>
     <br>
