@@ -38,7 +38,7 @@ class Home(View):
         j = 0
 
         while i < blog_len and j < cast_len:
-            if (blogs[i].pub_date.replace(tzinfo=None) <
+            if (blogs[i].pub_date.replace(tzinfo=None) >
                 datetime.strptime(active_episodes[j]['published_at'][:9],
                                   '%Y-%m-%d')):
                 post_list.append([blogs[i], 'blog'])
@@ -48,12 +48,12 @@ class Home(View):
                 post_list.append([active_episodes[j], 'podcast'])
                 j += 1
 
-        last_blog = blogs[i:]
-        last_cast = active_episodes[j:]
-        if len(last_blog) > 0:
-            post_list.append([blogs[i:][0], 'blog'])
-        if len(last_cast) > 0:
-            post_list.append([active_episodes[j:][0], 'podcast'])
+        while i < blog_len:
+            post_list.append([blogs[i], 'blog'])
+            i += 1
+        while j < cast_len:
+            post_list.append([active_episodes[j], 'podcast'])
+            j += 1
 
         return post_list
 

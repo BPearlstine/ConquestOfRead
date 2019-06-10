@@ -5,7 +5,7 @@
     {% if post.1 == 'blog' %}
       {% with post.0 as blog %}
         <div class="card">
-          <h5 class="card-header">{{ blog.title }}</h5>
+          <h5 class="card-header">{{ blog.title }} - {{ post.2 }}</h5>
           <div class="card-body">
             <div class="row">
               <div class="col-md-2">
@@ -31,7 +31,7 @@
     {% else %}
       {% with post.0 as cast %}
         <div class="card">
-          <h5 class="card-header">{{ cast.title }}</h5>
+          <h5 class="card-header">{{ cast.title }} - {{ post.2 }}</h5>
           <div class="card-body">
             <div class="row">
               <div class="col-md-2">
