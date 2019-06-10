@@ -2,7 +2,6 @@
 
 {% block content %}
   {% for post in post_list %}
-  {{post.1}}
     {% if post.1 == 'blog' %}
       {% with post.0 as blog %}
         <div class="card">

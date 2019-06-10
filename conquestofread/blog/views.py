@@ -1,7 +1,7 @@
 import requests
 from datetime import datetime
 
-from django.shortcuts import reverse
+from django.urls import reverse
 from django.template.response import TemplateResponse
 from django.views.generic.detail import View
 from django.views.generic.edit import CreateView
