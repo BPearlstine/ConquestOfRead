@@ -17,7 +17,14 @@ from django.contrib import admin
 from django.urls import include
 from django.urls import path
 
+from blog import views
+
 urlpatterns = [
+    path('',
+         views.Home.as_view(),
+         name='home'),
     path('podcast/', include('podcast.urls')),
     path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('blog/', include('blog.urls'))
 ]

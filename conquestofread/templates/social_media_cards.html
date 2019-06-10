@@ -1,0 +1,15 @@
+{% load instagram_client %}
+{% instagram_user_recent_media conquestofread %}
+{% for media in recent_media %}
+  <div class="card">
+    <div class="card-body">
+      <a href="//instagram.com/p/{{ media.shortcode }}" target="_blank">
+        <img class="rounded" src="{{ media.thumbnail_src }}" style="width:200px;height:200px;"><br>
+        {% with text=media.edge_media_to_caption.edges.0.node.text %}
+            <span>{{ text|truncatechars:100 }}</span>
+        {% endwith %}
+      </a>
+    </div>
+  </div>
+  <br>
+{% endfor %}

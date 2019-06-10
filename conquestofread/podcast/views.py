@@ -3,7 +3,6 @@ import requests
 from django.shortcuts import render
 from django.template.response import TemplateResponse
 from django.views.generic.detail import View
-# Create your views here.
 
 
 class PodcastListView(View):
