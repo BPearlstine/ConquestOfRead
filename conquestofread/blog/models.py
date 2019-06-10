@@ -21,4 +21,4 @@ class Blog(models.Model):
         return self.title
 
     class Meta:
-        ordering = ['-id']
+        ordering = ['id']
