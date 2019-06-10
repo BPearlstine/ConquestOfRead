@@ -1,29 +1,53 @@
 {% extends "base.html" %}
 
 {% block content %}
-  {% for blog in blogs %}
-    <div class="card">
-      <h5 class="card-header">{{ blog.title }}</h5>
-      <div class="card-body">
-        <div class="row">
-          <div class="col-md-2">
-            {% if blog.image %}
-              <img src="{{ blog.image }}" alt="" style="width:100px;height:100px;">
-            {% else %}
-              <img src="" alt="" style="width:100px;height:100px;">
-            {% endif %}
-          </div>
-          <div class="col-md-10">
-            <p class="card-text">{{ blog.summary }}<br></p>
+  {% for post in post_list %}
+  {{post.1}}
+    {% if post.1 == 'blog' %}
+      {% with post.1 as blog %}
+        <div class="card">
+          <h5 class="card-header">{{ blog.title }}</h5>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-2">
+                {% if blog.image %}
+                  <img src="{{ blog.image }}" alt="" style="width:100px;height:100px;">
+                {% else %}
+                  <img src="" alt="" style="width:100px;height:100px;">
+                {% endif %}
+              </div>
+              <div class="col-md-10">
+                <p class="card-text">{{ blog.summary }}<br></p>
+              </div>
+            </div>
+            <footer class="blockquote-footer">
+              {% for tag in blog.tags.all %}
+                {{ tag.tag }},
+              {% endfor %}
+            </footer>
           </div>
         </div>
-        <footer class="blockquote-footer">
-          {% for tag in blog.tags.all %}
-            {{ tag.tag }}, 
-          {% endfor %}
-        </footer>
-      </div>
-    </div>
-    <br>
+        <br>
+      {% endwith %}
+    {% else %}
+      {% with post.0 as cast %}
+        <div class="card">
+          <h5 class="card-header">{{ cast.title }}</h5>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-2">
+                <img src="{{ cast.artwork_url }}" alt="" style="width:100px;height:100px;">
+              </div>
+              <div class="col-md-10">
+                <p class="card-text">{{ cast.description|safe }}<br></p>
+              </div>
+            </div>
+            <a href="{{ cast.audio_url }}" class="btn btn-primary">Listen Here!</a>
+            <footer class="blockquote-footer">{{ cast.tags }}</footer>
+          </div>
+        </div>
+        <br>
+      {% endwith %}
+    {% endif %}
   {% endfor %}
 {% endblock %}

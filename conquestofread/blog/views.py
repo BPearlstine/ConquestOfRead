@@ -1,4 +1,6 @@
 import requests
+from collections import deque
+from datetime import datetime
 
 from django.shortcuts import render
 from django.shortcuts import reverse
@@ -12,9 +14,46 @@ from .models import Blog
 class Home(View):
     template_name = 'blog/home.html'
 
-    def get(self, request):
+    def get_active_episodes(self, curr_date):
+        token = 'f79214411501414d1a1412bae3d6303e'
+        url = 'https://www.buzzsprout.com/api/288519/episodes.json'
+        header = {'Authorization': 'Token token={}'.format(token)}
+        r = requests.get(url, headers=header)
+        podcasts = r.json()
+        active_episodes = [episode for episode in podcasts
+                           if datetime.strptime(
+                                        episode['published_at'][:9],
+                                        '%Y-%m-%d'
+                                        ) <= curr_date]
+        return active_episodes
+
+    def build_post_list(self):
+        curr_date = datetime.today()
         blogs = Blog.objects.all()
-        context = {'blogs': blogs}
+        active_episodes = self.get_active_episodes(curr_date)
+        blog_len = len(blogs)
+        cast_len = len(active_episodes)
+
+        post_list = []
+        i, j = 0, 0
+
+        while i < blog_len and j < cast_len:
+            if (blogs[i].pub_date.replace(tzinfo=None) <
+                datetime.strptime(active_episodes[j]['published_at'][:9],
+                                  '%Y-%m-%d')):
+              post_list.append([blogs[i], 'blog'])
+              i += 1
+
+            else:
+              post_list.append([active_episodes[j], 'podcast'])
+              j += 1
+
+        return post_list + [blogs[i:], 'blog'] + [active_episodes[j:], 'podcast']
+
+
+    def get(self, request):
+        post_list = self.build_post_list()
+        context = {'post_list': post_list}
         return TemplateResponse(request, self.template_name, context)
 
 class AddBlogView(CreateView):
