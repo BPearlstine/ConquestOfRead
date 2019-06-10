@@ -37,9 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bootstrap4',
-    'podcast',
-    'blog',
-    'registration',
+    'podcast.apps.PodcastConfig',
+    'blog.apps.BlogConfig',
+    'registration.apps.RegistrationConfig',
     'sorl.thumbnail',
     'django_instagram',
 ]

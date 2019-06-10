@@ -4,6 +4,10 @@ from django.db import models
 class Tag(models.Model):
     tag = models.CharField(max_length=30)
 
+    def __str__(self):
+        return self.tag
+
+
 class Blog(models.Model):
     title = models.CharField(max_length=255)
     pub_date = models.DateTimeField()
