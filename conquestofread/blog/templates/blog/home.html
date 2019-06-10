@@ -2,9 +2,8 @@
 
 {% block content %}
   {% for post in post_list %}
-  {{post.1}}
     {% if post.1 == 'blog' %}
-      {% with post.1 as blog %}
+      {% with post.0 as blog %}
         <div class="card">
           <h5 class="card-header">{{ blog.title }}</h5>
           <div class="card-body">

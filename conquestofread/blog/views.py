@@ -1,8 +1,6 @@
 import requests
-from collections import deque
 from datetime import datetime
 
-from django.shortcuts import render
 from django.shortcuts import reverse
 from django.template.response import TemplateResponse
 from django.views.generic.detail import View
@@ -10,6 +8,7 @@ from django.views.generic.edit import CreateView
 
 from .forms import AddBlogForm
 from .models import Blog
+
 
 class Home(View):
     template_name = 'blog/home.html'
@@ -35,26 +34,34 @@ class Home(View):
         cast_len = len(active_episodes)
 
         post_list = []
-        i, j = 0, 0
+        i = 0
+        j = 0
 
         while i < blog_len and j < cast_len:
             if (blogs[i].pub_date.replace(tzinfo=None) <
                 datetime.strptime(active_episodes[j]['published_at'][:9],
                                   '%Y-%m-%d')):
-              post_list.append([blogs[i], 'blog'])
-              i += 1
+                post_list.append([blogs[i], 'blog'])
+                i += 1
 
             else:
-              post_list.append([active_episodes[j], 'podcast'])
-              j += 1
+                post_list.append([active_episodes[j], 'podcast'])
+                j += 1
 
-        return post_list + [blogs[i:], 'blog'] + [active_episodes[j:], 'podcast']
+        last_blog = blogs[i:]
+        last_cast = active_episodes[j:]
+        if len(last_blog) > 0:
+            post_list.append([blogs[i:][0], 'blog'])
+        if len(last_cast) > 0:
+            post_list.append([active_episodes[j:][0], 'podcast'])
 
+        return post_list
 
     def get(self, request):
         post_list = self.build_post_list()
         context = {'post_list': post_list}
         return TemplateResponse(request, self.template_name, context)
+
 
 class AddBlogView(CreateView):
     template_name = 'blog/add_blog.html'
