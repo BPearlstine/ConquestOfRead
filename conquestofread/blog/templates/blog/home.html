@@ -9,7 +9,9 @@
           <div class="card-body">
             <div class="row">
               <div class="col-md-2">
-                <img src="{{ blog.image.url }}" alt="" style="width:100px;height:100px;" class="rounded">
+                {% if blog.image %}
+                  <img src="{{ blog.image.url }}" alt="" style="width:100px;height:100px;" class="rounded">
+                {% endif %}
               </div>
               <div class="col-md-10">
                 <p class="card-text">{{ blog.summary }}<br></p>
@@ -17,7 +19,7 @@
             </div>
             <footer class="blockquote-footer">
               {% for tag in blog.tags.all %}
-                {{ tag.tag }},
+                <a href="#">{{ tag.tag }},</a>
               {% endfor %}
             </footer>
           </div>
