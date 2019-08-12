@@ -1,11 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-  {% if object_list %}
-    huh
-  {% else %}
-    but why tho
-  {% endif %}
   {% for blog in blog_list %}
     <div class="card">
       <h5 class="card-header">{{ blog.title }}</h5>

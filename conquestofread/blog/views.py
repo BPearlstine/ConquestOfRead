@@ -13,7 +13,7 @@ from .models import Tag
 
 
 class Home(ListView):
-
+    context_object_name = 'blog_list'
     model = Blog
     template_name = 'blog/home.html'
 
@@ -47,12 +47,11 @@ class Home(ListView):
             for tag in tags:
                 tag, _ = Tag.objects.get_or_create(tag=tag.strip())
                 blog.tags.add(tag)
-        return active_episodes
 
-    def get(self, request):
+    def get_queryset(self):
         curr_date = datetime.today()
         self.get_active_episodes(curr_date)
-        return TemplateResponse(request, self.template_name)
+        return Blog.objects.all().order_by('-pub_date')
 
 
 class AddBlogView(CreateView):
@@ -69,11 +68,11 @@ class BlogsByTagView(ListView):
     model = Blog
 
     def get(self, request, pk):
-
         self.object_list = self.get_queryset(pk)
-        return TemplateResponse(request, self.template_name)
+        context = self.get_context_data()
+        return TemplateResponse(request, self.template_name, context)
 
     def get_queryset(self, pk):
         tag = Tag.objects.get(pk=pk)
-        blogs = tag.blog_set
+        blogs = tag.blog_set.all()
         return blogs
