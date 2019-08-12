@@ -1,50 +1,32 @@
 {% extends "base.html" %}
 
 {% block content %}
-  {% for post in post_list %}
-    {% if post.1 == 'blog' %}
-      {% with post.0 as blog %}
-        <div class="card">
-          <h5 class="card-header">{{ blog.title }}</h5>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-md-2">
-                {% if blog.image %}
-                  <img src="{{ blog.image.url }}" alt="" style="width:100px;height:100px;" class="rounded">
-                {% endif %}
-              </div>
-              <div class="col-md-10">
-                <p class="card-text">{{ blog.summary }}<br></p>
-              </div>
-            </div>
-            <footer class="blockquote-footer">
-              {% for tag in blog.tags.all %}
-                <a href="#">{{ tag.tag }},</a>
-              {% endfor %}
-            </footer>
+  {% if object_list %}
+    huh
+  {% else %}
+    but why tho
+  {% endif %}
+  {% for blog in blog_list %}
+    <div class="card">
+      <h5 class="card-header">{{ blog.title }}</h5>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-2">
+            {% if blog.image %}
+              <img src="{{ blog.image.url }}" alt="" style="width:100px;height:100px;" class="rounded">
+            {% endif %}
+          </div>
+          <div class="col-md-10">
+            <p class="card-text">{{ blog.summary }}<br></p>
           </div>
         </div>
-        <br>
-      {% endwith %}
-    {% else %}
-      {% with post.0 as cast %}
-        <div class="card">
-          <h5 class="card-header">{{ cast.title }}</h5>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-md-2">
-                <img src="{{ cast.artwork_url }}" alt="" style="width:100px;height:100px;" class="rounded">
-              </div>
-              <div class="col-md-10">
-                <p class="card-text">{{ cast.description|safe }}<br></p>
-              </div>
-            </div>
-            <a href="{{ cast.audio_url }}" class="btn btn-primary">Listen Here!</a>
-            <footer class="blockquote-footer">{{ cast.tags }}</footer>
-          </div>
-        </div>
-        <br>
-      {% endwith %}
-    {% endif %}
+        <footer class="blockquote-footer">
+          {% for tag in blog.tags.all %}
+            <a href="{% url 'blogs_by_tag' tag.pk %}">{{ tag.tag }}</a>
+          {% endfor %}
+        </footer>
+      </div>
+    </div>
+    <br>
   {% endfor %}
 {% endblock %}
