@@ -35,18 +35,21 @@ class Home(ListView):
             episode['tags'] = tags
             image_content = ContentFile(requests.get(
                                             episode['artwork_url']).content)
-            blog, created = Blog.objects.get_or_create(
-                            title=episode['title'],
-                            pub_date=datetime.strptime(
-                                         episode['published_at'][:episode[
-                                                 'published_at'].index('T')],
-                                         '%Y-%m-%d'),
-                            body=episode['description'])
-            if created:
-                blog.image.save('image.jpg', image_content)
-            for tag in tags:
-                tag, _ = Tag.objects.get_or_create(tag=tag.strip())
-                blog.tags.add(tag)
+            try:
+                Blog.objects.get(title=episode['title'])
+            except Blog.DoesNotExist:
+                blog, created = Blog.objects.get_or_create(
+                                title=episode['title'],
+                                pub_date=datetime.strptime(
+                                            episode['published_at'][:episode[
+                                                'published_at'].index('T')],
+                                            '%Y-%m-%d'),
+                                body=episode['description'])
+                if created:
+                    blog.image.save('image.jpg', image_content)
+                for tag in tags:
+                    tag, _ = Tag.objects.get_or_create(tag=tag.strip())
+                    blog.tags.add(tag)
 
     def get_queryset(self):
         curr_date = datetime.today()
