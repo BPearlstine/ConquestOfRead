@@ -1,4 +1,5 @@
 from django.db import models
+from django.dispatch import receiver
 
 
 class Tag(models.Model):
@@ -26,3 +27,8 @@ class Blog(models.Model):
 
     class Meta:
         ordering = ['id']
+
+
+@receiver(models.signals.post_delete, sender=Blog)
+def delete_periodic_tasks(sender, instance, *args, **kwargs):
+    instance.image.delete()

@@ -3,7 +3,7 @@
 {% block content %}
   {% for blog in blog_list %}
     <div class="card">
-      <h5 class="card-header">{{ blog.title }}</h5>
+      <h5 class="card-header"><a href="{% url 'detail' blog.pk %}">{{ blog.title }}</a></h5>
       <div class="card-body">
         <div class="row">
           <div class="col-md-2">
@@ -12,7 +12,7 @@
             {% endif %}
           </div>
           <div class="col-md-10">
-            <p class="card-text">{{ blog.summary }}<br></p>
+            <p class="card-text">{{ blog.summary|safe }}<br></p>
           </div>
         </div>
         <footer class="blockquote-footer">

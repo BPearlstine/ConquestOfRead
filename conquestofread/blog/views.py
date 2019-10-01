@@ -3,7 +3,9 @@ from datetime import datetime
 
 from django.core.files.base import ContentFile
 from django.urls import reverse
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.views.generic import View
 from django.views.generic import CreateView
 from django.views.generic import ListView
 
@@ -36,7 +38,7 @@ class Home(ListView):
             image_content = ContentFile(requests.get(
                                             episode['artwork_url']).content)
             try:
-                Blog.objects.get(title=episode['title'])
+                Blog.objects.filter(title=episode['title'])
             except Blog.DoesNotExist:
                 blog, created = Blog.objects.get_or_create(
                                 title=episode['title'],
@@ -57,6 +59,17 @@ class Home(ListView):
         return Blog.objects.all().order_by('-pub_date')
 
 
+class BlogDetailView(View):
+    template_name = 'blog/detail.html'
+
+    def get(self, request, pk):
+        try:
+            blog = Blog.objects.get(pk=pk)
+        except Blog.DoesNotExist:
+            blog = None
+        return TemplateResponse(request, self.template_name, {'blog': blog})
+
+
 class AddBlogView(CreateView):
     template_name = 'blog/add_blog.html'
     model = Blog
@@ -64,6 +77,18 @@ class AddBlogView(CreateView):
 
     def get_success_url(self):
         return reverse('home')
+
+
+class DeleteBlogView(View):
+    template_name = 'blog/delete.html'
+
+    def get(self, request, pk):
+        try:
+            blog = Blog.objects.get(pk=pk)
+            blog.delete()
+        except Blog.DoesNotExist:
+            pass
+        return redirect('home')
 
 
 class BlogsByTagView(ListView):
