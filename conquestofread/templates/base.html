@@ -2,6 +2,7 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
+
     {% load static %}
     <title>Conquest of Read</title>
     <style>
@@ -9,6 +10,7 @@
         color:black;
       }
     </style>
+    <script src="https://kit.fontawesome.com/7479595a53.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   </head>
   <body>
@@ -18,32 +20,29 @@
     <div class="container-flex" style="padding:1rem;">
       <ul class="nav justify-content-center">
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'home' %}">Home</a>
+          <a class="nav-link" href="{% url 'home' %}"><i class="fas fa-home fa-lg"></i> Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">About Us</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Friends</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Gram</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Zucced</a>
+          <a class="nav-link" href="#"><i class="fas fa-user-secret fa-lg"></i> About Us</a>
         </li>
         {% if user.is_authenticated %}
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'add_blog' %}">Write Post</a>
+          <a class="nav-link" href="{% url 'add_blog' %}"><i class="fas fa-pen fa-lg"></i> Write Post</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+          <a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-in-alt fa-lg"></i> Logout</a>
         </li>
         {% else %}
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'login' %}">Login</a>
+            <a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-out-alt fa-lg"></i> Login</a>
           </li>
         {% endif %}
+        <li class="nav-item">
+          <a class="nav-link" href="https://www.instagram.com/conquestofread/"><i class="fab fa-instagram fa-lg"></i></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://www.facebook.com/ConquestOfRead/"><i class="fab fa-facebook-square fa-lg"></i></a>
+        </li>
       </ul>
       <div class="row">
         <div class="col-md-3">
