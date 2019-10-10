@@ -1,8 +1,13 @@
 from django.db import models
+from django.dispatch import receiver
 
-# Create your models here.
+
 class Tag(models.Model):
     tag = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.tag
+
 
 class Blog(models.Model):
     title = models.CharField(max_length=255)
@@ -22,3 +27,8 @@ class Blog(models.Model):
 
     class Meta:
         ordering = ['id']
+
+
+@receiver(models.signals.post_delete, sender=Blog)
+def delete_periodic_tasks(sender, instance, *args, **kwargs):
+    instance.image.delete()

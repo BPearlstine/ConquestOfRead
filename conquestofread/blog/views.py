@@ -1,16 +1,22 @@
 import requests
 from datetime import datetime
 
-from django.shortcuts import reverse
+from django.core.files.base import ContentFile
+from django.urls import reverse
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from django.views.generic.detail import View
-from django.views.generic.edit import CreateView
+from django.views.generic import View
+from django.views.generic import CreateView
+from django.views.generic import ListView
 
 from .forms import AddBlogForm
 from .models import Blog
+from .models import Tag
 
 
-class Home(View):
+class Home(ListView):
+    context_object_name = 'blog_list'
+    model = Blog
     template_name = 'blog/home.html'
 
     def get_active_episodes(self, curr_date):
@@ -19,48 +25,49 @@ class Home(View):
         header = {'Authorization': 'Token token={}'.format(token)}
         r = requests.get(url, headers=header)
         podcasts = r.json()
+        print(curr_date)
         active_episodes = [episode for episode in podcasts
                            if datetime.strptime(
-                                        episode['published_at'][:9],
+                                        episode['published_at'][:episode[
+                                                'published_at'].index('T')],
                                         '%Y-%m-%d'
                                         ) <= curr_date]
-        return active_episodes
+        for episode in active_episodes:
+            tags = episode['tags'].split(',')
+            episode['tags'] = tags
+            image_content = ContentFile(requests.get(
+                                            episode['artwork_url']).content)
+            try:
+                Blog.objects.filter(title=episode['title'])
+            except Blog.DoesNotExist:
+                blog, created = Blog.objects.get_or_create(
+                                title=episode['title'],
+                                pub_date=datetime.strptime(
+                                            episode['published_at'][:episode[
+                                                'published_at'].index('T')],
+                                            '%Y-%m-%d'),
+                                body=episode['description'])
+                if created:
+                    blog.image.save('image.jpg', image_content)
+                for tag in tags:
+                    tag, _ = Tag.objects.get_or_create(tag=tag.strip())
+                    blog.tags.add(tag)
 
-    def build_post_list(self):
+    def get_queryset(self):
         curr_date = datetime.today()
-        blogs = Blog.objects.all()
-        active_episodes = self.get_active_episodes(curr_date)
-        blog_len = len(blogs)
-        cast_len = len(active_episodes)
+        self.get_active_episodes(curr_date)
+        return Blog.objects.all().order_by('-pub_date')
 
-        post_list = []
-        i = 0
-        j = 0
 
-        while i < blog_len and j < cast_len:
-            if (blogs[i].pub_date.replace(tzinfo=None) >
-                datetime.strptime(active_episodes[j]['published_at'][:9],
-                                  '%Y-%m-%d')):
-                post_list.append([blogs[i], 'blog'])
-                i += 1
+class BlogDetailView(View):
+    template_name = 'blog/detail.html'
 
-            else:
-                post_list.append([active_episodes[j], 'podcast'])
-                j += 1
-
-        while i < blog_len:
-            post_list.append([blogs[i], 'blog'])
-            i += 1
-        while j < cast_len:
-            post_list.append([active_episodes[j], 'podcast'])
-            j += 1
-
-        return post_list
-
-    def get(self, request):
-        post_list = self.build_post_list()
-        context = {'post_list': post_list}
-        return TemplateResponse(request, self.template_name, context)
+    def get(self, request, pk):
+        try:
+            blog = Blog.objects.get(pk=pk)
+        except Blog.DoesNotExist:
+            blog = None
+        return TemplateResponse(request, self.template_name, {'blog': blog})
 
 
 class AddBlogView(CreateView):
@@ -70,3 +77,30 @@ class AddBlogView(CreateView):
 
     def get_success_url(self):
         return reverse('home')
+
+
+class DeleteBlogView(View):
+    template_name = 'blog/delete.html'
+
+    def get(self, request, pk):
+        try:
+            blog = Blog.objects.get(pk=pk)
+            blog.delete()
+        except Blog.DoesNotExist:
+            pass
+        return redirect('home')
+
+
+class BlogsByTagView(ListView):
+    template_name = 'blog/tagged.html'
+    model = Blog
+
+    def get(self, request, pk):
+        self.object_list = self.get_queryset(pk)
+        context = self.get_context_data()
+        return TemplateResponse(request, self.template_name, context)
+
+    def get_queryset(self, pk):
+        tag = Tag.objects.get(pk=pk)
+        blogs = tag.blog_set.all()
+        return blogs
